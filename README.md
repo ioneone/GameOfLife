@@ -4,3 +4,7 @@
 # To-Do
 1. Sound
 2. Start, Stop, and Step buttons
+
+# Resource
+1. Wikipedia(https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
+2. Intro_to_Java_Programming,_Comprehensive_Version_(10th_Edition)
