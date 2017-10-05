@@ -20,8 +20,8 @@ import java.util.TimerTask;
  */
 public class GameOfLife extends Application {
 
-    private static final double CELL_SIZE = 5;
-    private static final int ROW = 100;
+    private static final double CELL_SIZE = 3;
+    private static final int ROW = 200;
     private static final int COL = 200;
     private static int generation = 0;
     private static int liveCells = 0;
@@ -46,6 +46,9 @@ public class GameOfLife extends Application {
 
     public void init(Stage primaryStage) {
         GridPane pane = new GridPane();
+        pane.setHgap(1);
+        pane.setVgap(1);
+        pane.setStyle("-fx-background-color: #000000;");
         Scene scene = new Scene(pane);
         cells = new Cell[ROW][COL];
 

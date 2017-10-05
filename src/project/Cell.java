@@ -8,8 +8,8 @@ import javafx.scene.shape.Rectangle;
  */
 public class Cell extends Rectangle {
 
-    private static final Color ALIVE_COLOR = Color.BLACK;
-    private static final Color DEAD_COLOR = Color.WHITE;
+    private static final Color ALIVE_COLOR = Color.YELLOW;
+    private static final Color DEAD_COLOR = Color.GRAY;
 
     private boolean isAlive;
     private boolean isAliveNext;
