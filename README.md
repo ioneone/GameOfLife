@@ -4,6 +4,7 @@
 # To-Do
 1. Sound
 2. Start, Stop, and Step buttons
+3. Right click to place a live cell, left click to remove a live cell
 
 # Resource
 1. Wikipedia(https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
