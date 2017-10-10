@@ -20,9 +20,10 @@ import java.util.TimerTask;
  */
 public class GameOfLife extends Application {
 
-    private static final double CELL_SIZE = 5;
+    private static final double CELL_SIZE = 3;
     private static final int ROW = 100;
-    private static final int COL = 200;
+    private static final int COL = 100;
+    private static final int SPEED = 200; // 1 update per speed (in millisecond)
     private static int generation = 0;
     private static int liveCells = 0;
     private static Cell[][] cells;
@@ -41,11 +42,14 @@ public class GameOfLife extends Application {
                 prepare();
                 update();
             }
-        }, 0, 200); // 0.2 sec
+        }, 0, SPEED);
     }
 
     public void init(Stage primaryStage) {
         GridPane pane = new GridPane();
+        pane.setHgap(1);
+        pane.setVgap(1);
+        pane.setStyle("-fx-background-color: #000000;");
         Scene scene = new Scene(pane);
         cells = new Cell[ROW][COL];
 
@@ -58,11 +62,17 @@ public class GameOfLife extends Application {
 
         
 
-        Random random = new Random();
-        for (int i = 0; i < ROW * COL / 2; i++) {
-            cells[random.nextInt(ROW)][random.nextInt(COL)].setAlive(true);
-            liveCells++;
-        }
+//        Random random = new Random();
+//        for (int i = 0; i < ROW * COL / 2; i++) {
+//            cells[random.nextInt(ROW)][random.nextInt(COL)].setAlive(true);
+//            liveCells++;
+//        }
+
+        cells[50][50].setAlive(true);
+        cells[50][51].setAlive(true);
+        cells[50][52].setAlive(true);
+        cells[49][52].setAlive(true);
+        cells[48][51].setAlive(true);
 
         // Create a scene and place it in the stage
         primaryStage.setTitle("GameOfLife"); // Set the stage title primaryStage.setScene(scene); // Place the scene in the stage primaryStage.show(); // Display the stage
@@ -107,46 +117,48 @@ public class GameOfLife extends Application {
 
     private static int getNumLiveNeighbors(Cell[][] cells, int i, int j) {
         int numLiveNeighbors = 0;
+        int r;
+        int c;
+
+        // top
+        r = (i - 1 < 0) ? ROW - 1 : i - 1;
+        c = j;
+        if (cells[r][c].isAlive()) numLiveNeighbors++;
 
         // top-left
-        if (i - 1 >= 0 && j - 1 >= 0) {
-            if (cells[i - 1][j - 1].isAlive()) numLiveNeighbors++;
-        }
-        // top
-        if (j - 1 >= 0) {
-            if (cells[i][j - 1].isAlive()) numLiveNeighbors++;
-        }
-
-        // top-right
-        if (i + 1 < cells.length && j - 1 >= 0) {
-            if (cells[i + 1][j - 1].isAlive()) numLiveNeighbors++;
-        }
+        r = (i - 1 < 0) ? ROW - 1 : i - 1;
+        c = (j - 1 < 0) ? COL - 1 : j - 1;
+        if (cells[r][c].isAlive()) numLiveNeighbors++;
 
         // left
-        if (i - 1 >= 0) {
-            if (cells[i - 1][j].isAlive()) numLiveNeighbors++;
-        }
-
-        // right
-        if (i + 1 < cells.length) {
-            if (cells[i + 1][j].isAlive()) numLiveNeighbors++;
-        }
+        r = i;
+        c = (j - 1 < 0) ? COL - 1 : j - 1;
+        if (cells[r][c].isAlive()) numLiveNeighbors++;
 
         // bottom-left
-        if (i - 1 >= 0 && j + 1 < cells[i - 1].length) {
-            if (cells[i - 1][j + 1].isAlive()) numLiveNeighbors++;
-        }
+        r = (i + 1 < ROW) ? i + 1 : 0;
+        c = (j - 1 < 0) ? COL - 1 : j - 1;
+        if (cells[r][c].isAlive()) numLiveNeighbors++;
 
         // bottom
-        if (j + 1 < cells[i].length) {
-            if (cells[i][j + 1].isAlive()) numLiveNeighbors++;
-        }
+        r = (i + 1 < ROW) ? i + 1 : 0;
+        c = j;
+        if (cells[r][c].isAlive()) numLiveNeighbors++;
 
         // bottom-right
-        if (i + 1 < cells.length && j + 1 < cells[i + 1].length) {
-            if (cells[i + 1][j + 1].isAlive()) numLiveNeighbors++;
-        }
+        r = (i + 1 < ROW) ? i + 1 : 0;
+        c = (j + 1 < COL) ? j + 1 : 0;
+        if (cells[r][c].isAlive()) numLiveNeighbors++;
 
+        // right
+        r = i;
+        c = (j + 1 < COL) ? j + 1 : 0;
+        if (cells[r][c].isAlive()) numLiveNeighbors++;
+
+        // top-right
+        r = (i - 1 < 0) ? ROW - 1 : i - 1;
+        c = c = (j + 1 < COL) ? j + 1 : 0;
+        if (cells[r][c].isAlive()) numLiveNeighbors++;
 
         return numLiveNeighbors;
     }
