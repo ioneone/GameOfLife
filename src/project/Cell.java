@@ -1,15 +1,22 @@
 package project;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.EventListener;
+import java.util.EventObject;
 
 /**
  * Created by one on 9/21/17.
  */
 public class Cell extends Rectangle {
 
-    private static final Color ALIVE_COLOR = Color.YELLOW;
-    private static final Color DEAD_COLOR = Color.GRAY;
+    private static final Color ALIVE_COLOR = Color.BLACK;
+    private static final Color DEAD_COLOR = Color.WHITE;
 
     private boolean isAlive;
     private boolean isAliveNext;
@@ -34,6 +41,11 @@ public class Cell extends Rectangle {
         isAlive = isAliveNext;
         updateColor();
     }
+
+    private void onClick(){
+
+    }
+
 
     private void updateColor() {
         if (isAlive) {
@@ -69,4 +81,43 @@ public class Cell extends Rectangle {
         updateColor();
     }
 
+
+    
+
 }
+
+/*
+class MyEvent extends EventObject{
+    public MyEvent(Object source){
+        super(source);
+    }
+}
+interface MyEventlClassListener{
+    public void handleMyEventClassEvent(EventObject e);
+}
+
+class MyEventListener implements MyEventlClassListener{
+    public void handleMyEventClassEvent(EventObject e){
+
+    }
+}
+class myEventSource{
+    private List _listeners = new ArrayList();
+    public synchronized void addEventListener(MyEventlClassListener listener){
+        _listeners.add(listener);
+
+    }
+    public synchronized void removeEventListener(MyEventlClassListener listener){
+        _listeners.remove(listener);
+    }
+
+    private synchronized void fireEvent(){
+        MyEvent event = new MyEvent(this);
+        Iterator i = _listeners.iterator();
+        while(i.hasNext()){
+            ((MyEventlClassListener) i.next().handleMyEventClassEvent(event))
+    }
+}
+
+*/
+
