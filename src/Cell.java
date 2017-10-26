@@ -1,5 +1,3 @@
-package project;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
@@ -15,8 +13,8 @@ import java.util.EventObject;
  */
 public class Cell extends Rectangle {
 
-    private static final Color ALIVE_COLOR = Color.BLACK;
-    private static final Color DEAD_COLOR = Color.WHITE;
+    private static final Color ALIVE_COLOR = Color.YELLOW;
+    private static final Color DEAD_COLOR = Color.GRAY;
 
     private boolean isAlive;
     private boolean isAliveNext;
