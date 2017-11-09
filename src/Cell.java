@@ -1,5 +1,6 @@
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import java.util.List;
@@ -19,12 +20,13 @@ public class Cell extends Rectangle {
     private boolean isAlive;
     private boolean isAliveNext;
 
+
+
     public Cell(boolean isAlive, boolean isAliveNext, double size) {
         super(size, size);
         setFill(DEAD_COLOR);
         this.isAlive = isAlive;
         this.isAliveNext = isAliveNext;
-
     }
 
     public void updateNextState(int numLiveNeighbours) {
@@ -80,7 +82,9 @@ public class Cell extends Rectangle {
     }
 
 
-    
+    public void actionPerformed(ActionEvent e){
+
+    }
 
 }
 

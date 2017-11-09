@@ -1,7 +1,12 @@
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.Random;
@@ -22,17 +27,25 @@ public class GameOfLife extends Application {
     private static final int ROW = 100;
     private static final int COL = 80;
     private static int generation = 0;
-    private static int liveCells = 0;
+    private static int liveCells = 0; // update livecells.
+    //create function to display number of live cells.
+    //create reference to the application on cell class.
+    //then create function in main class incrementLiveCells.
+    //whenever we detect the click we go to incrementLiveCells.
+    //
     private static final int SPEED = 400; // 1 update per speed (in millisecond)
     private static Cell[][] cells;
     private static boolean isContinuous = true;
     private static boolean playing = false;
-
+    private static boolean isReset = false;
+    private static boolean isStopped = false;
+//    int r=0, c=0;
     @Override
     public void start(Stage primaryStage) throws Exception {
         init(primaryStage);
         gameLoop();
     }
+
 
     public void gameLoop() {
         Timer timer = new Timer();
@@ -55,10 +68,62 @@ public class GameOfLife extends Application {
         GridPane pane = getGOLPane();
 
         cells = new Cell[ROW][COL];
-        for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells[i].length; j++) {
-                cells[i][j] = new Cell(false, false, CELL_SIZE);
-                pane.add(cells[i][j], i, j);
+        for (int r = 0; r < cells.length; r++) {
+            for (int c = 0; c < cells[r].length; c++) {
+                Cell cell = new Cell(false, false, CELL_SIZE);
+                cells[r][c] = cell;
+                cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+
+                        cell.setFill(Color.YELLOW); //.setAlive(true);
+
+                    }
+                });
+                /*
+                cell.setOnDragEntered(new EventHandler<DragEvent>() {
+                    @Override
+                    public void handle(DragEvent event) {
+
+                    }
+                });
+                cell.setOnDragDropped(new EventHandler<DragEvent>() {
+                    @Override
+                    public void handle(DragEvent event) {
+                        //cell.setFill(Color.YELLOW);
+                    }
+                });
+                cell.setOnDragDetected(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        //cell.setFill(Color.YELLOW);
+                    }
+                });
+                cell.setOnDragDone(new EventHandler<DragEvent>() {
+                    @Override
+                    public void handle(DragEvent event) {
+                        if(event.getTransferMode() == TransferMode.MOVE){
+                            cell.setFill(Color.YELLOW);
+                        }
+                    }
+                });
+
+                        (new EventHandler<DragEvent>() {
+                    @Override
+                    public void handle(DragEvent event) {
+                        cell.setFill(Color.YELLOW); //.setAlive(true);
+                    }
+                });*/
+                pane.add(cell, r, c);
+                /*
+                cells[r][c].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        cells[r][c].setFill(Color.YELLOW);
+                    }
+                });*/
+
+
             }
         }
 
@@ -82,7 +147,7 @@ public class GameOfLife extends Application {
 
         setStartButtonAction(btnStart);
         setStopButtonAction(btnStop);
-        setResetButtonAction(btnReset);
+        setResetButtonAction(btnReset, btnStop);
         setStepButtonAction(btnStep);
 
         BorderPane root = new BorderPane();
@@ -106,30 +171,49 @@ public class GameOfLife extends Application {
         });
     }
 
-    private static void setResetButtonAction(Button btn) {
+    private static void setResetButtonAction(Button btn, Button btnStop) {
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 //start(primaryStage);
+                int j=0;
+                for (int i = 0; i < ROW ; i++) {
+                    for(j=0; j< COL; j++) {
+                        cells[i][j].setAlive(false);
+                    }
+                }
+                isReset = true;
+                isStopped = false;
+
+                if(!playing){
+                    btnStop.setText("Stop");
+                    playing = false;
+
+                }
             }
+
         });
+
     }
 
     private static void setStopButtonAction(Button btn) {
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(playing){
-                    btn.setText("Continue");
-                    playing = false;
-                }
+                if(!isReset){
+                    if(playing){
+                        btn.setText("Continue");
+                        playing = false;
+                        isStopped = true;
+                    }
 
-                else {
-                    btn.setText("Stop");
-                    playing = true;
-                    prepare();
-                    update();
-
+                    else {
+                        btn.setText("Stop");
+                        playing = true;
+                        isStopped = false;
+                        prepare();
+                        update();
+                    }
                 }
             }
         });
@@ -139,9 +223,18 @@ public class GameOfLife extends Application {
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                playing = true;
-                initGlider();
+                if(!isStopped){
+                    playing = true;
+                    initGlider();
+                    isReset = false;
+                    isStopped = false;
+                }
+                else{
+                    if(isReset){
 
+                    }
+
+                }
             }
         });
     }
@@ -190,12 +283,15 @@ public class GameOfLife extends Application {
     }
 
     private static void initGlider() {
-        cells[50][50].setAlive(true);
-        cells[50][51].setAlive(true);
-        cells[50][52].setAlive(true);
-        cells[49][52].setAlive(true);
-        cells[48][51].setAlive(true);
-        liveCells = 5;
+        if(liveCells==0){
+            cells[50][50].setAlive(true);
+            cells[50][51].setAlive(true);
+            cells[50][52].setAlive(true);
+            cells[49][52].setAlive(true);
+            cells[48][51].setAlive(true);
+            liveCells = 5;
+        }
+
     }
 
     private static int getNumLiveNeighbors(Cell[][] cells, int i, int j) {
