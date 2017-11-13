@@ -14,17 +14,39 @@ import java.util.EventObject;
  */
 public class Cell extends Rectangle {
 
-    private static final Color ALIVE_COLOR = Color.YELLOW;
-    private static final Color DEAD_COLOR = Color.GRAY;
+    public static final Color ALIVE_COLOR = Color.YELLOW;
+    public static final Color DEAD_COLOR = Color.GRAY;
+
+    public static final Color HOVER_COLOR = Color.RED;
 
     private boolean isAlive;
     private boolean isAliveNext;
 
-
+    private int row = -1;
+    private int col = -1;
 
     public Cell(boolean isAlive, boolean isAliveNext, double size) {
         super(size, size);
-        setFill(DEAD_COLOR);
+        if (isAlive) {
+            setFill(ALIVE_COLOR);
+        } else {
+            setFill(DEAD_COLOR);
+        }
+
+        this.isAlive = isAlive;
+        this.isAliveNext = isAliveNext;
+    }
+
+    public Cell(boolean isAlive, boolean isAliveNext, double size, int row, int col) {
+        super(size, size);
+        this.row = row;
+        this.col = col;
+        if (isAlive) {
+            setFill(ALIVE_COLOR);
+        } else {
+            setFill(DEAD_COLOR);
+        }
+
         this.isAlive = isAlive;
         this.isAliveNext = isAliveNext;
     }
@@ -84,6 +106,14 @@ public class Cell extends Rectangle {
 
     public void actionPerformed(ActionEvent e){
 
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
     }
 
 }
