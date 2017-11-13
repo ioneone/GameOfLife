@@ -1,16 +1,28 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+
 import javafx.scene.input.*;
+
+import javafx.scene.control.*;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
+
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Button;
 import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.BorderPane;
@@ -18,7 +30,6 @@ import javafx.scene.layout.BorderPane;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
 
 import java.io.File;
 /**
@@ -26,9 +37,9 @@ import java.io.File;
  */
 public class GameOfLife extends Application {
 
-    private static final double CELL_SIZE = 5;
-    private static final int ROW = 100;
-    private static final int COL = 80;
+    private static final double CELL_SIZE = 10;
+    private static final int ROW = 50;
+    private static final int COL = 50;
     private static int generation = 0;
     private static int liveCells = 0; // update livecells.
     //create function to display number of live cells.
@@ -43,10 +54,18 @@ public class GameOfLife extends Application {
     private static boolean isReset = false;
     private static boolean isStopped = false;
 
-    private static String musicFile = "GOLmusic.mp3";
-    private static Media sound = new Media(new File(musicFile).toURI().toString());
-    private static MediaPlayer mediaPlayer = new MediaPlayer(sound);
+//    private static String musicFile = "GOLmusic.mp3";
+//    private static Media sound = new Media(new File(musicFile).toURI().toString());
+//    private static MediaPlayer mediaPlayer = new MediaPlayer(sound);
 
+
+    private static boolean isSelected = false;
+    private static Pattern selectedPattern = null;
+    private static PatternCell selectedPatternCell = new PatternCell();
+
+
+    private static Label generationLabel;
+    private static Label selectedPatternLabel;
 
 //    int r=0, c=0;
     @Override
@@ -61,10 +80,22 @@ public class GameOfLife extends Application {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if(playing){
-                    prepare();
-                    update();
-                }
+                Platform.runLater(() -> {
+                    if(playing){
+                        prepare();
+                        update();
+                    }
+                    generationLabel.setText(Integer.toString(generation));
+                    System.out.println(selectedPattern);
+                    if (selectedPattern == null) {
+                        selectedPatternLabel.setText("NULL");
+                        selectedPatternLabel.setGraphic(null);
+                    } else {
+                        selectedPatternLabel.setText(selectedPattern.name());
+                        selectedPatternLabel.setGraphic(selectedPatternCell);
+                    }
+                });
+
 
             }
         }, 0, SPEED); // 0.2 sec
@@ -73,22 +104,114 @@ public class GameOfLife extends Application {
 
     public void init(Stage primaryStage) {
 
+        Rectangle2D rec = Screen.getPrimary().getVisualBounds();
+
+        System.out.println(rec.toString());
 
         GridPane pane = getGOLPane();
 
         cells = new Cell[ROW][COL];
         for (int r = 0; r < cells.length; r++) {
             for (int c = 0; c < cells[r].length; c++) {
-                Cell cell = new Cell(false, false, CELL_SIZE);
+                Cell cell = new Cell(false, false, CELL_SIZE, r, c);
                 cells[r][c] = cell;
                 cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        cell.setAlive(true);
-                        cell.setFill(Color.YELLOW); //.setAlive(true);
-                        liveCells++;
+
+                        if (selectedPattern == null) {
+                            cell.setAlive(true);
+                            cell.setFill(Color.YELLOW); //.setAlive(true);
+                        } else {
+                            int[][] data = selectedPatternCell.getData();
+                            int r = cell.getRow();
+                            int c = cell.getCol();
+                            int centerR = (int) data.length / 2;
+                            int centerC = (int) data[0].length / 2;
+                            for (int i = 0; i < data.length; i++) {
+                                for (int j = 0; j < data[i].length; j++) {
+                                    if (0 <= r+i-centerR && r+i-centerR < ROW && 0 <= c+j-centerC && c+j-centerC < COL) {
+                                        if (data[i][j] == 1) {
+                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.ALIVE_COLOR);
+                                            cells[r+i-centerR][c+j-centerC].setAlive(true);
+                                            selectedPatternCell = null;
+                                            selectedPattern = null;
+                                        } else {
+                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.DEAD_COLOR);
+                                            cells[r+i-centerR][c+j-centerC].setAlive(false);
+                                            selectedPatternCell = null;
+                                            selectedPattern = null;
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+
+
                     }
                 });
+                cell.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        if (selectedPattern == null) {
+                            cell.setFill(Cell.HOVER_COLOR);
+                        } else {
+                            int[][] data = selectedPatternCell.getData();
+                            int r = cell.getRow();
+                            int c = cell.getCol();
+                            int centerR = (int) data.length / 2;
+                            int centerC = (int) data[0].length / 2;
+                            for (int i = 0; i < data.length; i++) {
+                                for (int j = 0; j < data[i].length; j++) {
+
+                                    if (0 <= r+i-centerR && r+i-centerR < ROW && 0 <= c+j-centerC && c+j-centerC < COL) {
+                                        if (data[i][j] == 1) {
+                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.HOVER_COLOR);
+                                        } else {
+                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.DEAD_COLOR);
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+
+                    }
+                });
+
+                cell.setOnMouseExited(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        if (selectedPattern == null) {
+                            if (cell.isAlive()) {
+                                cell.setFill(Cell.ALIVE_COLOR);
+                            } else {
+                                cell.setFill(Cell.DEAD_COLOR);
+                            }
+                        } else {
+                            int[][] data = selectedPatternCell.getData();
+                            int r = cell.getRow();
+                            int c = cell.getCol();
+
+                            int centerR = (int) data.length / 2;
+                            int centerC = (int) data[0].length / 2;
+                            for (int i = 0; i < data.length; i++) {
+                                for (int j = 0; j < data[i].length; j++) {
+                                    if (0 <= r+i-centerR && r+i-centerR < ROW && 0 <= c+j-centerC && c+j-centerC < COL) {
+                                        if (cells[r+i-centerR][c+j-centerC].isAlive()) {
+                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.ALIVE_COLOR);
+                                        } else {
+                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.DEAD_COLOR);
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                });
+
 
 
                 cell.setOnDragDetected(new EventHandler<MouseEvent>() {
@@ -182,8 +305,15 @@ public class GameOfLife extends Application {
                         event.consume();
                     }
                 });
-                pane.add(cell, r, c);
 
+                pane.add(cell, c, r);
+                /*
+                cells[r][c].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        cells[r][c].setFill(Color.YELLOW);
+                    }
+                });*/
 
 
             }
@@ -214,11 +344,70 @@ public class GameOfLife extends Application {
 
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(10, 10, 10,10));
-        root.setTop(pane);
+        root.setCenter(pane);
         root.setBottom(hbButtons);
 
-        Scene scene = new Scene(root);
+        GridPane gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER);
+        int i = 0;
+        for (Pattern pattern : Pattern.values()) {
+            PatternCell patternCell = new PatternCell(pattern, CELL_SIZE);
+            Label lbl = new Label(pattern.name(), patternCell);
+            lbl.setContentDisplay(ContentDisplay.TOP);
+            lbl.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if (selectedPattern != null && selectedPattern == pattern) {
+                        isSelected = false;
+                        selectedPattern = null;
+                        selectedPatternCell = null;
+                    } else {
+                        isSelected = true;
+                        selectedPattern = pattern;
+                        selectedPatternCell = new PatternCell(pattern, CELL_SIZE);
+                    }
+                    System.out.println(selectedPattern);
+                }
+            });
 
+            GridPane.setHalignment(lbl, HPos.CENTER);
+            gridPane.add(lbl, 0, i++);
+
+        }
+
+//        for (Node node : gridPane.getChildren()) {
+//            node.setOnMouseEntered(e -> gridPane.getChildren().forEach(c -> {
+//                Integer targetIndex = GridPane.getRowIndex(node);
+//                if (GridPane.getRowIndex(c) == targetIndex) {
+//                    c.setStyle("-fx-background-color:#f9f3c5;");
+//                }
+//            }));
+//            node.setOnMouseExited(e -> gridPane.getChildren().forEach(c -> {
+//                Integer targetIndex = GridPane.getRowIndex(node);
+//                if (GridPane.getRowIndex(c) == targetIndex) {
+//                    c.setStyle("-fx-background-color:#ffffff;");
+//                }
+//            }));
+//        }
+
+        ScrollPane scrollPane = new ScrollPane(gridPane);
+        scrollPane.setPrefHeight(CELL_SIZE*ROW);
+        scrollPane.setPrefWidth(230);
+        scrollPane.setPadding(new Insets(10, 10, 10, 10));
+        root.setRight(scrollPane);
+
+        GridPane grid = new GridPane();
+        grid.add(new Label("Generation"), 0, 0);
+        generationLabel = new Label(Integer.toString(generation));
+        grid.add(generationLabel, 0, 1);
+        grid.add(new Label("Selected Pattern"), 0, 2);
+        selectedPatternLabel = new Label("NULL", selectedPatternCell);
+        selectedPatternLabel.setContentDisplay(ContentDisplay.TOP);
+        grid.add(selectedPatternLabel, 0, 3);
+        grid.setPrefWidth(230);
+        root.setLeft(grid);
+
+        Scene scene = new Scene(root);
         setupPrimaryStage(primaryStage, scene);
 
     }
@@ -234,8 +423,6 @@ public class GameOfLife extends Application {
 
                 prepare();
                 update();
-
-
 
             }
         });
@@ -260,7 +447,7 @@ public class GameOfLife extends Application {
                     playing = false;
 
                 }
-                mediaPlayer.stop();
+//                mediaPlayer.stop();
             }
 
         });
@@ -285,10 +472,10 @@ public class GameOfLife extends Application {
                         prepare();
                         update();
                     }
-                    if(playing)
-                        mediaPlayer.play();
-                    else
-                        mediaPlayer.pause();
+//                    if(playing)
+//                        mediaPlayer.play();
+//                    else
+//                        mediaPlayer.pause();
                 }
             }
         });
@@ -300,13 +487,13 @@ public class GameOfLife extends Application {
             public void handle(ActionEvent event) {
                 if(!isStopped){
                     playing = true;
-                    initGlider();
+                    initRandom();
                     isReset = false;
                     isStopped = false;
                     if(playing){
-                        mediaPlayer.play();
-                       //loop forever
-                        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+//                        mediaPlayer.play();
+//                       //loop forever
+//                        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
                     }
 
                 }
@@ -332,6 +519,7 @@ public class GameOfLife extends Application {
     private static void setupPrimaryStage(Stage primaryStage, Scene scene) {
         // Create a scene and place it in the stage
         primaryStage.setResizable(false);
+//        primaryStage.setMaximized(true);
         primaryStage.setTitle("GameOfLife"); // Set the stage title primaryStage.setScene(scene); // Place the scene in the stage primaryStage.show(); // Display the stage
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -354,6 +542,7 @@ public class GameOfLife extends Application {
             }
         }
         generation++;
+
     }
 
     private static void initRandom() {
