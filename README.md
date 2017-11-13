@@ -1,5 +1,5 @@
 # GameOfLife
-<img width="731" alt="screen shot 2017-10-26 at 1 42 46 pm" src="https://user-images.githubusercontent.com/21322866/32076070-95d7eefc-ba53-11e7-96ea-167b3ddb10a4.png">
+<img width="1141" alt="screen shot 2017-11-13 at 1 58 35 pm" src="https://user-images.githubusercontent.com/21322866/32751454-d32cfbbe-c87a-11e7-9534-a11cd63f1cab.png">
 
 # To-Do
 1. Sound
