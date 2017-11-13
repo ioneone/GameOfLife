@@ -4,18 +4,18 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.Scene;
+
+import javafx.scene.input.*;
+
 import javafx.scene.control.*;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -27,6 +27,11 @@ import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.BorderPane;
 
+
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
+import java.io.File;
 /**
  * Created by one on 9/21/17.
  */
@@ -49,6 +54,11 @@ public class GameOfLife extends Application {
     private static boolean isReset = false;
     private static boolean isStopped = false;
 
+//    private static String musicFile = "GOLmusic.mp3";
+//    private static Media sound = new Media(new File(musicFile).toURI().toString());
+//    private static MediaPlayer mediaPlayer = new MediaPlayer(sound);
+
+
     private static boolean isSelected = false;
     private static Pattern selectedPattern = null;
     private static PatternCell selectedPatternCell = new PatternCell();
@@ -56,6 +66,7 @@ public class GameOfLife extends Application {
 
     private static Label generationLabel;
     private static Label selectedPatternLabel;
+
 //    int r=0, c=0;
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -107,6 +118,7 @@ public class GameOfLife extends Application {
                 cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
+
                         if (selectedPattern == null) {
                             cell.setAlive(true);
                             cell.setFill(Color.YELLOW); //.setAlive(true);
@@ -114,17 +126,19 @@ public class GameOfLife extends Application {
                             int[][] data = selectedPatternCell.getData();
                             int r = cell.getRow();
                             int c = cell.getCol();
+                            int centerR = (int) data.length / 2;
+                            int centerC = (int) data[0].length / 2;
                             for (int i = 0; i < data.length; i++) {
                                 for (int j = 0; j < data[i].length; j++) {
-                                    if (r + i < ROW && c + j < COL) {
+                                    if (0 <= r+i-centerR && r+i-centerR < ROW && 0 <= c+j-centerC && c+j-centerC < COL) {
                                         if (data[i][j] == 1) {
-                                            cells[r+i][c+j].setFill(Cell.ALIVE_COLOR);
-                                            cells[r+i][c+j].setAlive(true);
+                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.ALIVE_COLOR);
+                                            cells[r+i-centerR][c+j-centerC].setAlive(true);
                                             selectedPatternCell = null;
                                             selectedPattern = null;
                                         } else {
-                                            cells[r+i][c+j].setFill(Cell.DEAD_COLOR);
-                                            cells[r+i][c+j].setAlive(false);
+                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.DEAD_COLOR);
+                                            cells[r+i-centerR][c+j-centerC].setAlive(false);
                                             selectedPatternCell = null;
                                             selectedPattern = null;
                                         }
@@ -146,13 +160,16 @@ public class GameOfLife extends Application {
                             int[][] data = selectedPatternCell.getData();
                             int r = cell.getRow();
                             int c = cell.getCol();
+                            int centerR = (int) data.length / 2;
+                            int centerC = (int) data[0].length / 2;
                             for (int i = 0; i < data.length; i++) {
                                 for (int j = 0; j < data[i].length; j++) {
-                                    if (r + i < ROW && c + j < COL) {
+
+                                    if (0 <= r+i-centerR && r+i-centerR < ROW && 0 <= c+j-centerC && c+j-centerC < COL) {
                                         if (data[i][j] == 1) {
-                                            cells[r+i][c+j].setFill(Cell.HOVER_COLOR);
+                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.HOVER_COLOR);
                                         } else {
-                                            cells[r+i][c+j].setFill(Cell.DEAD_COLOR);
+                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.DEAD_COLOR);
                                         }
                                     }
 
@@ -176,56 +193,119 @@ public class GameOfLife extends Application {
                             int[][] data = selectedPatternCell.getData();
                             int r = cell.getRow();
                             int c = cell.getCol();
+
+                            int centerR = (int) data.length / 2;
+                            int centerC = (int) data[0].length / 2;
                             for (int i = 0; i < data.length; i++) {
                                 for (int j = 0; j < data[i].length; j++) {
-                                    if (r + i < ROW && c + j < COL) {
-                                        if (cells[r+i][c+j].isAlive()) {
-                                            cells[r+i][c+j].setFill(Cell.ALIVE_COLOR);
+                                    if (0 <= r+i-centerR && r+i-centerR < ROW && 0 <= c+j-centerC && c+j-centerC < COL) {
+                                        if (cells[r+i-centerR][c+j-centerC].isAlive()) {
+                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.ALIVE_COLOR);
                                         } else {
-                                            cells[r+i][c+j].setFill(Cell.DEAD_COLOR);
+                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.DEAD_COLOR);
                                         }
                                     }
 
                                 }
                             }
                         }
+                    }
+                });
 
-                    }
-                });
-                /*
-                cell.setOnDragEntered(new EventHandler<DragEvent>() {
-                    @Override
-                    public void handle(DragEvent event) {
 
-                    }
-                });
-                cell.setOnDragDropped(new EventHandler<DragEvent>() {
-                    @Override
-                    public void handle(DragEvent event) {
-                        //cell.setFill(Color.YELLOW);
-                    }
-                });
+
                 cell.setOnDragDetected(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        //cell.setFill(Color.YELLOW);
+                        /* allow any transfer mode */
+                        Dragboard db = cell.startDragAndDrop(TransferMode.ANY);
+
+                       //put a string on dragboard - can't make it work without this content block.
+                        ClipboardContent content = new ClipboardContent();
+                        content.putString("");
+                        db.setContent(content);
+
+                        cell.setAlive(true);
+                        cell.setFill(Color.YELLOW);
+                        liveCells++;
+                        event.consume();
+                    }
+                });
+
+                cell.setOnDragOver(new EventHandler<DragEvent>() {
+                    @Override
+                    public void handle(DragEvent event) {
+                        System.out.println("onDragOver");
+
+                        //if (event.getDragboard().hasString()) {
+
+                        //allow for both copying and moving, whatever user chooses
+                        event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                        //}
+                        cell.setFill(Color.YELLOW);
+                        cell.setAlive(true);
+                        liveCells++;
+                        event.consume();
+                    }
+                });
+
+                cell .setOnDragEntered(new EventHandler<DragEvent>() {
+                    @Override
+                    public void handle(DragEvent event) {
+                        System.out.println("onDragEntered");
+
+                        //if (event.getDragboard().hasString()) {
+
+                        cell.setFill(Color.YELLOW);
+                        //}
+                        cell.setAlive(true);
+                        liveCells++;
+
+                        event.consume();
+                    }
+                });
+                /*
+                cell.setOnDragExited(new EventHandler<DragEvent>() {
+                    @Override
+                    public void handle(DragEvent event) {
+                        cell.setFill(Color.YELLOW);
+                        cell.setAlive(true);
+                        liveCells++;
+                        event.consume();
+                    }
+                });*/
+                cell.setOnDragDropped(new EventHandler<DragEvent>() {
+                    @Override
+                    public void handle(DragEvent event) {
+                        System.out.println("onDragDropped");
+
+                       /* if there is a string data on dragboard, read it and use it */
+                        //Dragboard db = event.getDragboard();
+
+                        cell.setFill(Color.YELLOW);
+                        cell.setAlive(true);
+                        liveCells ++;
+                        event.setDropCompleted(true);
+
+                        event.consume();
                     }
                 });
                 cell.setOnDragDone(new EventHandler<DragEvent>() {
                     @Override
                     public void handle(DragEvent event) {
-                        if(event.getTransferMode() == TransferMode.MOVE){
+                       /* the drag-and-drop gesture ended */
+                        System.out.println("onDragDone");
+
+                        if (event.getTransferMode() == TransferMode.MOVE) {
                             cell.setFill(Color.YELLOW);
+                            cell.setAlive(true);
+                            liveCells++;
                         }
+
+                        event.consume();
                     }
                 });
 
-                        (new EventHandler<DragEvent>() {
-                    @Override
-                    public void handle(DragEvent event) {
-                        cell.setFill(Color.YELLOW); //.setAlive(true);
-                    }
-                });*/
                 pane.add(cell, c, r);
                 /*
                 cells[r][c].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
@@ -336,6 +416,11 @@ public class GameOfLife extends Application {
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                //mediaPlayer.play();
+               // mediaPlayer.getCycleDuration();
+
+
+
                 prepare();
                 update();
 
@@ -362,6 +447,7 @@ public class GameOfLife extends Application {
                     playing = false;
 
                 }
+//                mediaPlayer.stop();
             }
 
         });
@@ -386,6 +472,10 @@ public class GameOfLife extends Application {
                         prepare();
                         update();
                     }
+//                    if(playing)
+//                        mediaPlayer.play();
+//                    else
+//                        mediaPlayer.pause();
                 }
             }
         });
@@ -400,6 +490,12 @@ public class GameOfLife extends Application {
                     initRandom();
                     isReset = false;
                     isStopped = false;
+                    if(playing){
+//                        mediaPlayer.play();
+//                       //loop forever
+//                        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+                    }
+
                 }
                 else{
                     if(isReset){
@@ -407,6 +503,7 @@ public class GameOfLife extends Application {
                     }
 
                 }
+
             }
         });
     }

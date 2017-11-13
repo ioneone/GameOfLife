@@ -68,7 +68,6 @@ public class Cell extends Rectangle {
 
     }
 
-
     private void updateColor() {
         if (isAlive) {
             setFill(ALIVE_COLOR);

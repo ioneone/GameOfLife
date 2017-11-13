@@ -59,6 +59,7 @@ public class test extends Application {
                     event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                 }
 
+
                 event.consume();
             }
         });
