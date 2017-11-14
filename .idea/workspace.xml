@@ -1,39 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="GameOfLife:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="1b963254-7f24-425e-a6bf-134991abaaf0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cis36ProjectDocumentation.docx" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/GameOfLife/Pattern.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/GameOfLife/PatternCell$1.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/GameOfLife/PatternCell.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Pattern.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/PatternCell.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/GameOfLife_jar.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/GameOfLife/META-INF/MANIFEST.MF" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/artifacts/GameOfLife_jar/GameOfLife.jar" afterPath="$PROJECT_DIR$/out/artifacts/GameOfLife_jar/GameOfLife.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GameOfLife/Cell.class" afterPath="$PROJECT_DIR$/out/production/GameOfLife/Cell.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$1.class" afterPath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$10.class" afterPath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$10.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$11.class" afterPath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$11.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$2.class" afterPath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$2.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$3.class" afterPath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$3.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$4.class" afterPath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$4.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$5.class" afterPath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$5.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$6.class" afterPath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$6.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$7.class" afterPath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$7.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$8.class" afterPath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$8.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$9.class" afterPath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife$9.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife.class" afterPath="$PROJECT_DIR$/out/production/GameOfLife/GameOfLife.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Cell.java" afterPath="$PROJECT_DIR$/src/Cell.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/GameOfLife_jar.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/GameOfLife_jar.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GameOfLife.java" afterPath="$PROJECT_DIR$/src/GameOfLife.java" />
     </list>
     <ignored path="GameOfLife.iws" />
@@ -67,8 +42,8 @@
       <file leaf-file-name="GameOfLife.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/GameOfLife.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="34" column="3" selection-start-line="34" selection-start-column="3" selection-end-line="34" selection-end-column="3" />
+            <state relative-caret-position="255">
+              <caret line="48" column="35" selection-start-line="48" selection-start-column="35" selection-end-line="48" selection-end-column="35" />
               <folding />
             </state>
           </provider>
@@ -82,6 +57,13 @@
   <component name="GradleLocalSettings">
     <option name="externalProjectsViewState">
       <projects_view />
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/GameOfLife.java" />
+      </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
@@ -114,9 +96,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -155,6 +137,9 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -455,12 +440,12 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32967034" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287879" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -507,6 +492,22 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/GameOfLife.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/vcs.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/GameOfLife.java" />
     <entry file="file://$PROJECT_DIR$/.idea/vcs.xml">
       <provider selected="true" editor-type-id="text-editor">
@@ -526,11 +527,88 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/GameOfLife.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="34" column="3" selection-start-line="34" selection-start-column="3" selection-end-line="34" selection-end-column="3" />
+        <state relative-caret-position="255">
+          <caret line="48" column="35" selection-start-line="48" selection-start-column="35" selection-end-line="48" selection-end-column="35" />
           <folding />
         </state>
       </provider>
     </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <last-edited>GameOfLife:jar</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.5" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>GameOfLife</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.6" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
   </component>
 </project>

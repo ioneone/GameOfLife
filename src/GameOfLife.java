@@ -46,7 +46,7 @@ public class GameOfLife extends Application {
     //create reference to the application on cell class.
     //then create function in main class incrementLiveCells.
     //whenever we detect the click we go to incrementLiveCells.
-    //
+    //x button not working properly
     private static final int SPEED = 400; // 1 update per speed (in millisecond)
     private static Cell[][] cells;
     private static boolean isContinuous = true;
