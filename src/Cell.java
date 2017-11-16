@@ -16,7 +16,6 @@ public class Cell extends Rectangle {
 
     public static final Color ALIVE_COLOR = Color.YELLOW;
     public static final Color DEAD_COLOR = Color.GRAY;
-
     public static final Color HOVER_COLOR = Color.RED;
 
     private boolean isAlive;
@@ -64,10 +63,6 @@ public class Cell extends Rectangle {
         updateColor();
     }
 
-    private void onClick(){
-
-    }
-
     private void updateColor() {
         if (isAlive) {
             setFill(ALIVE_COLOR);
@@ -102,11 +97,6 @@ public class Cell extends Rectangle {
         updateColor();
     }
 
-
-    public void actionPerformed(ActionEvent e){
-
-    }
-
     public int getRow() {
         return row;
     }
@@ -116,39 +106,3 @@ public class Cell extends Rectangle {
     }
 
 }
-
-/*
-class MyEvent extends EventObject{
-    public MyEvent(Object source){
-        super(source);
-    }
-}
-interface MyEventlClassListener{
-    public void handleMyEventClassEvent(EventObject e);
-}
-
-class MyEventListener implements MyEventlClassListener{
-    public void handleMyEventClassEvent(EventObject e){
-
-    }
-}
-class myEventSource{
-    private List _listeners = new ArrayList();
-    public synchronized void addEventListener(MyEventlClassListener listener){
-        _listeners.add(listener);
-
-    }
-    public synchronized void removeEventListener(MyEventlClassListener listener){
-        _listeners.remove(listener);
-    }
-
-    private synchronized void fireEvent(){
-        MyEvent event = new MyEvent(this);
-        Iterator i = _listeners.iterator();
-        while(i.hasNext()){
-            ((MyEventlClassListener) i.next().handleMyEventClassEvent(event))
-    }
-}
-
-*/
-

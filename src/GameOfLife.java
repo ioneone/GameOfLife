@@ -30,6 +30,7 @@ import javafx.scene.layout.BorderPane;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.WindowEvent;
 
 import java.io.File;
 /**
@@ -58,16 +59,11 @@ public class GameOfLife extends Application {
 //    private static Media sound = new Media(new File(musicFile).toURI().toString());
 //    private static MediaPlayer mediaPlayer = new MediaPlayer(sound);
 
-
-    private static boolean isSelected = false;
-    private static Pattern selectedPattern = null;
-    private static PatternCell selectedPatternCell = new PatternCell();
-
+    private static PatternCell selectedPatternCell = new PatternCell(null, CELL_SIZE);
 
     private static Label generationLabel;
     private static Label selectedPatternLabel;
 
-//    int r=0, c=0;
     @Override
     public void start(Stage primaryStage) throws Exception {
         init(primaryStage);
@@ -85,15 +81,8 @@ public class GameOfLife extends Application {
                         prepare();
                         update();
                     }
-                    generationLabel.setText(Integer.toString(generation));
-                    System.out.println(selectedPattern);
-                    if (selectedPattern == null) {
-                        selectedPatternLabel.setText("NULL");
-                        selectedPatternLabel.setGraphic(null);
-                    } else {
-                        selectedPatternLabel.setText(selectedPattern.name());
-                        selectedPatternLabel.setGraphic(selectedPatternCell);
-                    }
+                    updateGenerationLabel();
+                    updateSelectedPatternLabel();
                 });
 
 
@@ -101,251 +90,77 @@ public class GameOfLife extends Application {
         }, 0, SPEED); // 0.2 sec
     }
 
+    public void updateGenerationLabel() {
+        generationLabel.setText(Integer.toString(generation));
+    }
+
+    public void updateSelectedPatternLabel() {
+        if (selectedPatternCell.getPattern() == null) {
+            selectedPatternLabel.setText("NULL");
+            selectedPatternLabel.setGraphic(null);
+        } else {
+            selectedPatternLabel.setText(selectedPatternCell.getPattern().name());
+            selectedPatternLabel.setGraphic(new PatternCell(selectedPatternCell));
+        }
+    }
+
 
     public void init(Stage primaryStage) {
 
-        Rectangle2D rec = Screen.getPrimary().getVisualBounds();
+        GridPane centerPane = getCenterPane();
+        HBox bottomPane = getBottomPane();
+        ScrollPane rightPane = getRightPane();
+        GridPane leftPane = getLeftPane();
+        BorderPane root = new BorderPane();
 
-        System.out.println(rec.toString());
+        root.setPadding(new Insets(10, 10, 10,10));
+        root.setCenter(centerPane);
+        root.setBottom(bottomPane);
+        root.setRight(rightPane);
+        root.setLeft(leftPane);
 
-        GridPane pane = getGOLPane();
+        Scene scene = new Scene(root);
+        setupPrimaryStage(primaryStage, scene);
 
+    }
+
+    private static GridPane getCenterPane() {
+        GridPane golPane = getGOLPane();
         cells = new Cell[ROW][COL];
         for (int r = 0; r < cells.length; r++) {
             for (int c = 0; c < cells[r].length; c++) {
                 Cell cell = new Cell(false, false, CELL_SIZE, r, c);
                 cells[r][c] = cell;
-                cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-
-                        if (selectedPattern == null) {
-                            cell.setAlive(true);
-                            cell.setFill(Color.YELLOW); //.setAlive(true);
-                        } else {
-                            int[][] data = selectedPatternCell.getData();
-                            int r = cell.getRow();
-                            int c = cell.getCol();
-                            int centerR = (int) data.length / 2;
-                            int centerC = (int) data[0].length / 2;
-                            for (int i = 0; i < data.length; i++) {
-                                for (int j = 0; j < data[i].length; j++) {
-                                    if (0 <= r+i-centerR && r+i-centerR < ROW && 0 <= c+j-centerC && c+j-centerC < COL) {
-                                        if (data[i][j] == 1) {
-                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.ALIVE_COLOR);
-                                            cells[r+i-centerR][c+j-centerC].setAlive(true);
-                                            selectedPatternCell = null;
-                                            selectedPattern = null;
-                                        } else {
-                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.DEAD_COLOR);
-                                            cells[r+i-centerR][c+j-centerC].setAlive(false);
-                                            selectedPatternCell = null;
-                                            selectedPattern = null;
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-
-
-                    }
-                });
-                cell.setOnMouseEntered(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        if (selectedPattern == null) {
-                            cell.setFill(Cell.HOVER_COLOR);
-                        } else {
-                            int[][] data = selectedPatternCell.getData();
-                            int r = cell.getRow();
-                            int c = cell.getCol();
-                            int centerR = (int) data.length / 2;
-                            int centerC = (int) data[0].length / 2;
-                            for (int i = 0; i < data.length; i++) {
-                                for (int j = 0; j < data[i].length; j++) {
-
-                                    if (0 <= r+i-centerR && r+i-centerR < ROW && 0 <= c+j-centerC && c+j-centerC < COL) {
-                                        if (data[i][j] == 1) {
-                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.HOVER_COLOR);
-                                        } else {
-                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.DEAD_COLOR);
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-
-                    }
-                });
-
-                cell.setOnMouseExited(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        if (selectedPattern == null) {
-                            if (cell.isAlive()) {
-                                cell.setFill(Cell.ALIVE_COLOR);
-                            } else {
-                                cell.setFill(Cell.DEAD_COLOR);
-                            }
-                        } else {
-                            int[][] data = selectedPatternCell.getData();
-                            int r = cell.getRow();
-                            int c = cell.getCol();
-
-                            int centerR = (int) data.length / 2;
-                            int centerC = (int) data[0].length / 2;
-                            for (int i = 0; i < data.length; i++) {
-                                for (int j = 0; j < data[i].length; j++) {
-                                    if (0 <= r+i-centerR && r+i-centerR < ROW && 0 <= c+j-centerC && c+j-centerC < COL) {
-                                        if (cells[r+i-centerR][c+j-centerC].isAlive()) {
-                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.ALIVE_COLOR);
-                                        } else {
-                                            cells[r+i-centerR][c+j-centerC].setFill(Cell.DEAD_COLOR);
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                });
-
-
-
-                cell.setOnDragDetected(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        /* allow any transfer mode */
-                        Dragboard db = cell.startDragAndDrop(TransferMode.ANY);
-
-                       //put a string on dragboard - can't make it work without this content block.
-                        ClipboardContent content = new ClipboardContent();
-                        content.putString("");
-                        db.setContent(content);
-
-                        cell.setAlive(true);
-                        cell.setFill(Color.YELLOW);
-                        liveCells++;
-                        event.consume();
-                    }
-                });
-
-                cell.setOnDragOver(new EventHandler<DragEvent>() {
-                    @Override
-                    public void handle(DragEvent event) {
-                        System.out.println("onDragOver");
-
-                        //if (event.getDragboard().hasString()) {
-
-                        //allow for both copying and moving, whatever user chooses
-                        event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                        //}
-                        cell.setFill(Color.YELLOW);
-                        cell.setAlive(true);
-                        liveCells++;
-                        event.consume();
-                    }
-                });
-
-                cell .setOnDragEntered(new EventHandler<DragEvent>() {
-                    @Override
-                    public void handle(DragEvent event) {
-                        System.out.println("onDragEntered");
-
-                        //if (event.getDragboard().hasString()) {
-
-                        cell.setFill(Color.YELLOW);
-                        //}
-                        cell.setAlive(true);
-                        liveCells++;
-
-                        event.consume();
-                    }
-                });
-                /*
-                cell.setOnDragExited(new EventHandler<DragEvent>() {
-                    @Override
-                    public void handle(DragEvent event) {
-                        cell.setFill(Color.YELLOW);
-                        cell.setAlive(true);
-                        liveCells++;
-                        event.consume();
-                    }
-                });*/
-                cell.setOnDragDropped(new EventHandler<DragEvent>() {
-                    @Override
-                    public void handle(DragEvent event) {
-                        System.out.println("onDragDropped");
-
-                       /* if there is a string data on dragboard, read it and use it */
-                        //Dragboard db = event.getDragboard();
-
-                        cell.setFill(Color.YELLOW);
-                        cell.setAlive(true);
-                        liveCells ++;
-                        event.setDropCompleted(true);
-
-                        event.consume();
-                    }
-                });
-                cell.setOnDragDone(new EventHandler<DragEvent>() {
-                    @Override
-                    public void handle(DragEvent event) {
-                       /* the drag-and-drop gesture ended */
-                        System.out.println("onDragDone");
-
-                        if (event.getTransferMode() == TransferMode.MOVE) {
-                            cell.setFill(Color.YELLOW);
-                            cell.setAlive(true);
-                            liveCells++;
-                        }
-
-                        event.consume();
-                    }
-                });
-
-                pane.add(cell, c, r);
-                /*
-                cells[r][c].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        cells[r][c].setFill(Color.YELLOW);
-                    }
-                });*/
-
+                golPane.add(cell, c, r);
+                setCellMouseClickAction(cell);
+                setCellMouseEnteredAction(cell);
+                setCellExitedAction(cell);
+                setCellDragDetectedAction(cell);
+                setCellDragOverAction(cell);
+                setCellDragEnteredAction(cell);
+                setCellDragDroppedAction(cell);
+                setCellDragDoneAction(cell);
 
             }
         }
 
-        HBox hbButtons = new HBox();
-        hbButtons.setSpacing(10.0);
-        hbButtons.setPadding(new Insets(10,10,0,10));
+        return golPane;
+    }
 
-        Button btnStart = new Button();
-        btnStart.setText("Start");
+    private static GridPane getLeftPane() {
+        GridPane grid = new GridPane();
+        grid.add(new Label("Generation"), 0, 0);
+        generationLabel = new Label(Integer.toString(generation));
+        grid.add(generationLabel, 0, 1);
+        grid.add(new Label("Selected Pattern"), 0, 2);
+        selectedPatternLabel = new Label("NULL", selectedPatternCell);
+        selectedPatternLabel.setContentDisplay(ContentDisplay.TOP);
+        grid.add(selectedPatternLabel, 0, 3);
+        grid.setPrefWidth(230);
+        return grid;
+    }
 
-        Button btnStop = new Button();
-        btnStop.setText("Stop");
-
-        Button btnReset = new Button();
-        btnReset.setText("Reset");
-
-        Button btnStep = new Button();
-        btnStep.setText("Step");
-
-        hbButtons.getChildren().addAll(btnStart, btnStop, btnReset, btnStep);
-
-        setStartButtonAction(btnStart);
-        setStopButtonAction(btnStop);
-        setResetButtonAction(btnReset, btnStop);
-        setStepButtonAction(btnStep);
-
-        BorderPane root = new BorderPane();
-        root.setPadding(new Insets(10, 10, 10,10));
-        root.setCenter(pane);
-        root.setBottom(hbButtons);
+    private static ScrollPane getRightPane() {
 
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
@@ -357,16 +172,13 @@ public class GameOfLife extends Application {
             lbl.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
+                    Pattern selectedPattern = selectedPatternCell.getPattern();
                     if (selectedPattern != null && selectedPattern == pattern) {
-                        isSelected = false;
-                        selectedPattern = null;
-                        selectedPatternCell = null;
+                        selectedPatternCell.setPattern(null);
                     } else {
-                        isSelected = true;
-                        selectedPattern = pattern;
-                        selectedPatternCell = new PatternCell(pattern, CELL_SIZE);
+                        selectedPatternCell.setPattern(pattern);
                     }
-                    System.out.println(selectedPattern);
+
                 }
             });
 
@@ -375,41 +187,208 @@ public class GameOfLife extends Application {
 
         }
 
-//        for (Node node : gridPane.getChildren()) {
-//            node.setOnMouseEntered(e -> gridPane.getChildren().forEach(c -> {
-//                Integer targetIndex = GridPane.getRowIndex(node);
-//                if (GridPane.getRowIndex(c) == targetIndex) {
-//                    c.setStyle("-fx-background-color:#f9f3c5;");
-//                }
-//            }));
-//            node.setOnMouseExited(e -> gridPane.getChildren().forEach(c -> {
-//                Integer targetIndex = GridPane.getRowIndex(node);
-//                if (GridPane.getRowIndex(c) == targetIndex) {
-//                    c.setStyle("-fx-background-color:#ffffff;");
-//                }
-//            }));
-//        }
-
         ScrollPane scrollPane = new ScrollPane(gridPane);
         scrollPane.setPrefHeight(CELL_SIZE*ROW);
         scrollPane.setPrefWidth(230);
         scrollPane.setPadding(new Insets(10, 10, 10, 10));
-        root.setRight(scrollPane);
 
-        GridPane grid = new GridPane();
-        grid.add(new Label("Generation"), 0, 0);
-        generationLabel = new Label(Integer.toString(generation));
-        grid.add(generationLabel, 0, 1);
-        grid.add(new Label("Selected Pattern"), 0, 2);
-        selectedPatternLabel = new Label("NULL", selectedPatternCell);
-        selectedPatternLabel.setContentDisplay(ContentDisplay.TOP);
-        grid.add(selectedPatternLabel, 0, 3);
-        grid.setPrefWidth(230);
-        root.setLeft(grid);
+        return scrollPane;
+    }
 
-        Scene scene = new Scene(root);
-        setupPrimaryStage(primaryStage, scene);
+    private static void setCellMouseClickAction(Cell cell) {
+        cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
 
+                if (selectedPatternCell.getPattern() == null) {
+                    cell.setAlive(true);
+                    cell.setFill(Color.YELLOW); //.setAlive(true);
+                } else {
+                    int[][] data = selectedPatternCell.getData();
+                    int r = cell.getRow();
+                    int c = cell.getCol();
+                    int centerR = (int) data.length / 2;
+                    int centerC = (int) data[0].length / 2;
+                    for (int i = 0; i < data.length; i++) {
+                        for (int j = 0; j < data[i].length; j++) {
+                            if (0 <= r+i-centerR && r+i-centerR < ROW && 0 <= c+j-centerC && c+j-centerC < COL) {
+                                if (data[i][j] == 1) {
+                                    cells[r+i-centerR][c+j-centerC].setFill(Cell.ALIVE_COLOR);
+                                    cells[r+i-centerR][c+j-centerC].setAlive(true);
+                                } else {
+                                    cells[r+i-centerR][c+j-centerC].setFill(Cell.DEAD_COLOR);
+                                    cells[r+i-centerR][c+j-centerC].setAlive(false);
+                                }
+                            }
+
+                        }
+                    }
+
+                    selectedPatternCell.setPattern(null);
+                }
+
+
+            }
+        });
+    }
+
+    private static void setCellMouseEnteredAction(Cell cell) {
+        cell.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (selectedPatternCell.getPattern() == null) {
+                    cell.setFill(Cell.HOVER_COLOR);
+                } else {
+                    int[][] data = selectedPatternCell.getData();
+                    int r = cell.getRow();
+                    int c = cell.getCol();
+                    int centerR = (int) data.length / 2;
+                    int centerC = (int) data[0].length / 2;
+                    for (int i = 0; i < data.length; i++) {
+                        for (int j = 0; j < data[i].length; j++) {
+
+                            if (0 <= r+i-centerR && r+i-centerR < ROW && 0 <= c+j-centerC && c+j-centerC < COL) {
+                                if (data[i][j] == 1) {
+                                    cells[r+i-centerR][c+j-centerC].setFill(Cell.HOVER_COLOR);
+                                } else {
+                                    cells[r+i-centerR][c+j-centerC].setFill(Cell.DEAD_COLOR);
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+            }
+        });
+    }
+
+    private static void setCellExitedAction(Cell cell) {
+        cell.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (selectedPatternCell.getPattern() == null) {
+                    if (cell.isAlive()) {
+                        cell.setFill(Cell.ALIVE_COLOR);
+                    } else {
+                        cell.setFill(Cell.DEAD_COLOR);
+                    }
+                } else {
+                    int[][] data = selectedPatternCell.getData();
+                    int r = cell.getRow();
+                    int c = cell.getCol();
+
+                    int centerR = (int) data.length / 2;
+                    int centerC = (int) data[0].length / 2;
+                    for (int i = 0; i < data.length; i++) {
+                        for (int j = 0; j < data[i].length; j++) {
+                            if (0 <= r+i-centerR && r+i-centerR < ROW && 0 <= c+j-centerC && c+j-centerC < COL) {
+                                if (cells[r+i-centerR][c+j-centerC].isAlive()) {
+                                    cells[r+i-centerR][c+j-centerC].setFill(Cell.ALIVE_COLOR);
+                                } else {
+                                    cells[r+i-centerR][c+j-centerC].setFill(Cell.DEAD_COLOR);
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private static void setCellDragDetectedAction(Cell cell) {
+        cell.setOnDragDetected(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                        /* allow any transfer mode */
+                Dragboard db = cell.startDragAndDrop(TransferMode.ANY);
+
+                //put a string on dragboard - can't make it work without this content block.
+                ClipboardContent content = new ClipboardContent();
+                content.putString("");
+                db.setContent(content);
+
+                cell.setAlive(true);
+                cell.setFill(Color.YELLOW);
+                liveCells++;
+                event.consume();
+            }
+        });
+    }
+
+    private static void setCellDragOverAction(Cell cell) {
+        cell.setOnDragOver(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                System.out.println("onDragOver");
+
+                //if (event.getDragboard().hasString()) {
+
+                //allow for both copying and moving, whatever user chooses
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                //}
+                cell.setFill(Color.YELLOW);
+                cell.setAlive(true);
+                liveCells++;
+                event.consume();
+            }
+        });
+    }
+
+    private static void setCellDragEnteredAction(Cell cell) {
+        cell.setOnDragEntered(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                System.out.println("onDragEntered");
+
+                //if (event.getDragboard().hasString()) {
+
+                cell.setFill(Color.YELLOW);
+                //}
+                cell.setAlive(true);
+                liveCells++;
+
+                event.consume();
+            }
+        });
+    }
+
+    private static void setCellDragDroppedAction(Cell cell) {
+        cell.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                System.out.println("onDragDropped");
+
+                       /* if there is a string data on dragboard, read it and use it */
+                //Dragboard db = event.getDragboard();
+
+                cell.setFill(Color.YELLOW);
+                cell.setAlive(true);
+                liveCells ++;
+                event.setDropCompleted(true);
+
+                event.consume();
+            }
+        });
+    }
+
+    private static void setCellDragDoneAction(Cell cell) {
+        cell.setOnDragDone(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                       /* the drag-and-drop gesture ended */
+                System.out.println("onDragDone");
+
+                if (event.getTransferMode() == TransferMode.MOVE) {
+                    cell.setFill(Color.YELLOW);
+                    cell.setAlive(true);
+                    liveCells++;
+                }
+
+                event.consume();
+            }
+        });
     }
 
     private static void setStepButtonAction(Button btn) {
@@ -522,6 +501,14 @@ public class GameOfLife extends Application {
 //        primaryStage.setMaximized(true);
         primaryStage.setTitle("GameOfLife"); // Set the stage title primaryStage.setScene(scene); // Place the scene in the stage primaryStage.show(); // Display the stage
         primaryStage.setScene(scene);
+//        primaryStage.setOnCloseRequest(e -> Platform.exit());
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
         primaryStage.show();
     }
 
@@ -551,18 +538,6 @@ public class GameOfLife extends Application {
             cells[random.nextInt(ROW)][random.nextInt(COL)].setAlive(true);
             liveCells++;
         }
-    }
-
-    private static void initGlider() {
-        if(liveCells==0){
-            cells[50][50].setAlive(true);
-            cells[50][51].setAlive(true);
-            cells[50][52].setAlive(true);
-            cells[49][52].setAlive(true);
-            cells[48][51].setAlive(true);
-            liveCells = 5;
-        }
-
     }
 
     private static int getNumLiveNeighbors(Cell[][] cells, int i, int j) {
@@ -674,6 +649,33 @@ public class GameOfLife extends Application {
 
 
         return numLiveNeighbors;
+    }
+
+    private static HBox getBottomPane() {
+        HBox hbButtons = new HBox();
+        hbButtons.setSpacing(10.0);
+        hbButtons.setPadding(new Insets(10,10,0,10));
+
+        Button btnStart = new Button();
+        btnStart.setText("Start");
+
+        Button btnStop = new Button();
+        btnStop.setText("Stop");
+
+        Button btnReset = new Button();
+        btnReset.setText("Reset");
+
+        Button btnStep = new Button();
+        btnStep.setText("Step");
+
+        hbButtons.getChildren().addAll(btnStart, btnStop, btnReset, btnStep);
+
+        setStartButtonAction(btnStart);
+        setStopButtonAction(btnStop);
+        setResetButtonAction(btnReset, btnStop);
+        setStepButtonAction(btnStep);
+
+        return hbButtons;
     }
 
     public static void main(String[] args) {
