@@ -59,9 +59,10 @@ public class GameOfLife extends Application {
 //    private static Media sound = new Media(new File(musicFile).toURI().toString());
 //    private static MediaPlayer mediaPlayer = new MediaPlayer(sound);
 
-    private static PatternCell selectedPatternCell = new PatternCell(null, CELL_SIZE);
-
     private static Label generationLabel;
+    private static Label liveCellsLabel;
+
+    private static PatternCell selectedPatternCell = new PatternCell(null, CELL_SIZE);
     private static Label selectedPatternLabel;
 
     @Override
@@ -82,12 +83,17 @@ public class GameOfLife extends Application {
                         update();
                     }
                     updateGenerationLabel();
+                    updateLiveCellsLabel();
                     updateSelectedPatternLabel();
                 });
 
 
             }
         }, 0, SPEED); // 0.2 sec
+    }
+
+    public void updateLiveCellsLabel() {
+        liveCellsLabel.setText(Integer.toString(liveCells));
     }
 
     public void updateGenerationLabel() {
@@ -112,14 +118,14 @@ public class GameOfLife extends Application {
         ScrollPane rightPane = getRightPane();
         GridPane leftPane = getLeftPane();
         BorderPane root = new BorderPane();
+        Scene scene = new Scene(root);
 
-        root.setPadding(new Insets(10, 10, 10,10));
+        root.setPadding(new Insets(10, 10, 10, 10));
         root.setCenter(centerPane);
         root.setBottom(bottomPane);
         root.setRight(rightPane);
         root.setLeft(leftPane);
 
-        Scene scene = new Scene(root);
         setupPrimaryStage(primaryStage, scene);
 
     }
@@ -152,10 +158,16 @@ public class GameOfLife extends Application {
         grid.add(new Label("Generation"), 0, 0);
         generationLabel = new Label(Integer.toString(generation));
         grid.add(generationLabel, 0, 1);
-        grid.add(new Label("Selected Pattern"), 0, 2);
+
+        grid.add(new Label("liveCells"), 0, 2);
+        liveCellsLabel = new Label(Integer.toString(liveCells));
+        grid.add(liveCellsLabel, 0, 3);
+
+        grid.add(new Label("Selected Pattern"), 0, 4);
         selectedPatternLabel = new Label("NULL", selectedPatternCell);
         selectedPatternLabel.setContentDisplay(ContentDisplay.TOP);
-        grid.add(selectedPatternLabel, 0, 3);
+        grid.add(selectedPatternLabel, 0, 5);
+        
         grid.setPrefWidth(230);
         return grid;
     }
@@ -203,6 +215,7 @@ public class GameOfLife extends Application {
                 if (selectedPatternCell.getPattern() == null) {
                     cell.setAlive(true);
                     cell.setFill(Color.YELLOW); //.setAlive(true);
+                    liveCells++;
                 } else {
                     int[][] data = selectedPatternCell.getData();
                     int r = cell.getRow();
@@ -214,9 +227,16 @@ public class GameOfLife extends Application {
                             if (0 <= r+i-centerR && r+i-centerR < ROW && 0 <= c+j-centerC && c+j-centerC < COL) {
                                 if (data[i][j] == 1) {
                                     cells[r+i-centerR][c+j-centerC].setFill(Cell.ALIVE_COLOR);
+                                    if (!cells[r+i-centerR][c+j-centerC].isAlive()) {
+                                        liveCells++;
+                                    }
                                     cells[r+i-centerR][c+j-centerC].setAlive(true);
+
                                 } else {
                                     cells[r+i-centerR][c+j-centerC].setFill(Cell.DEAD_COLOR);
+                                    if (cells[r+i-centerR][c+j-centerC].isAlive()) {
+                                        liveCells--;
+                                    }
                                     cells[r+i-centerR][c+j-centerC].setAlive(false);
                                 }
                             }
