@@ -1,6 +1,7 @@
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -33,6 +34,10 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
+import javafx.animation.Timeline;
+import javafx.animation.KeyFrame;
+import javafx.util.Duration;
+
 /**
  * Created by one on 9/21/17.
  */
@@ -53,17 +58,21 @@ public class GameOfLife extends Application {
     private static boolean isContinuous = true;
     private static boolean playing = false;
     private static boolean isReset = false;
-    private static boolean isStopped = false;
+    private static boolean isPaused = true;
+    private static boolean isRandom = false;
 
-//    private static String musicFile = "GOLmusic.mp3";
-//    private static Media sound = new Media(new File(musicFile).toURI().toString());
-//    private static MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    private static String musicFile = "Debriefing.mp3";
+    private static Media sound = new Media(new File(musicFile).toURI().toString());
+    private static MediaPlayer mediaPlayer = new MediaPlayer(sound);
+
 
     private static Label generationLabel;
     private static Label liveCellsLabel;
 
     private static PatternCell selectedPatternCell = new PatternCell(null, CELL_SIZE);
     private static Label selectedPatternLabel;
+
+
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -73,21 +82,34 @@ public class GameOfLife extends Application {
 
 
     public void gameLoop() {
+
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
                     if(playing){
-                        prepare();
-                        update();
+                        if(liveCells > 0){
+                            prepare();
+                            update();
+                            updateGenerationLabel();
+                            updateLiveCellsLabel();
+                            updateSelectedPatternLabel();
+                            mediaPlayer.play();
+                        }
+                        else{
+                            mediaPlayer.stop();
+                        }
                     }
-                    updateGenerationLabel();
-                    updateLiveCellsLabel();
-                    updateSelectedPatternLabel();
+                    if(!playing && isPaused){
+                        updateGenerationLabel();
+                        updateLiveCellsLabel();
+                        updateSelectedPatternLabel();
+                    }
+                    if(isRandom){
+
+                    }
                 });
-
-
             }
         }, 0, SPEED); // 0.2 sec
     }
@@ -350,7 +372,7 @@ public class GameOfLife extends Application {
                 //}
                 cell.setFill(Color.YELLOW);
                 cell.setAlive(true);
-                liveCells++;
+                //liveCells++;
                 event.consume();
             }
         });
@@ -380,7 +402,7 @@ public class GameOfLife extends Application {
             public void handle(DragEvent event) {
                 System.out.println("onDragDropped");
 
-                       /* if there is a string data on dragboard, read it and use it */
+                /* if there is a string data on dragboard, read it and use it */
                 //Dragboard db = event.getDragboard();
 
                 cell.setFill(Color.YELLOW);
@@ -403,7 +425,7 @@ public class GameOfLife extends Application {
                 if (event.getTransferMode() == TransferMode.MOVE) {
                     cell.setFill(Color.YELLOW);
                     cell.setAlive(true);
-                    liveCells++;
+                    //liveCells++;
                 }
 
                 event.consume();
@@ -415,13 +437,18 @@ public class GameOfLife extends Application {
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //mediaPlayer.play();
-               // mediaPlayer.getCycleDuration();
+                //Timeline timeline = new Timeline(new KeyFrame(
+                //        Duration.millis(10),
+                //        ae -> mediaPlayer.play()
+                //));
+                //timeline.play();
 
-
-
-                prepare();
-                update();
+                if(liveCells>0){
+                    prepare();
+                    update();
+                }
+                //mediaPlayer.stop();
+                //timeline.stop();
 
             }
         });
@@ -439,14 +466,14 @@ public class GameOfLife extends Application {
                     }
                 }
                 isReset = true;
-                isStopped = false;
+                isPaused = false;
 
                 if(!playing){
                     btnStop.setText("Stop");
                     playing = false;
 
                 }
-//                mediaPlayer.stop();
+                mediaPlayer.stop();
             }
 
         });
@@ -457,25 +484,32 @@ public class GameOfLife extends Application {
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(!isReset){
-                    if(playing){
-                        btn.setText("Continue");
-                        playing = false;
-                        isStopped = true;
+                int j =0;
+                for (int i = 0; i < ROW ; i++) {
+                    for(j=0; j< COL; j++) {
+                        cells[i][j].setAlive(false);
                     }
-
-                    else {
-                        btn.setText("Stop");
-                        playing = true;
-                        isStopped = false;
-                        prepare();
-                        update();
-                    }
-//                    if(playing)
-//                        mediaPlayer.play();
-//                    else
-//                        mediaPlayer.pause();
                 }
+                isPaused = true;
+                GameOfLife.generation = 0;
+                GameOfLife.liveCells = 0;
+                playing = false;
+                isRandom = false;
+                mediaPlayer.stop();
+            }
+        });
+    }
+
+    private static void setRandomButtonAction(Button btn){
+        btn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mediaPlayer.play();
+                mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+                GameOfLife.initRandom();
+                isRandom = true;
+                playing = true;
+                btn.setDisable(true);
             }
         });
     }
@@ -484,26 +518,39 @@ public class GameOfLife extends Application {
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(!isStopped){
-                    playing = true;
-                    initRandom();
-                    isReset = false;
-                    isStopped = false;
-                    if(playing){
-//                        mediaPlayer.play();
-//                       //loop forever
-//                        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-                    }
-
+                if(playing){
+                    btn.setText("Play");
+                    isPaused = true;
+                    playing = false;
+                    mediaPlayer.pause();
                 }
                 else{
-                    if(isReset){
-
+                    if(liveCells > 0){
+                        mediaPlayer.play();
+                        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+                        playing = true;
+                        isPaused = false;
+                        btn.setText("Pause");
                     }
-
                 }
-
             }
+        });
+    }
+
+    private static void setUpAllButtons(Button btnStart, Button btnStop, Button btnRandom){
+        btnStart.addEventHandler(ActionEvent.ACTION, (e)->{
+            if(liveCells>0)
+                btnRandom.setDisable(true);
+        });
+
+        btnRandom.addEventHandler(ActionEvent.ACTION, (e)->{
+            btnStart.setText("Pause");
+            playing = true;
+        });
+
+        btnStop.addEventHandler(ActionEvent.ACTION, (e)->{
+            btnStart.setText("Play");
+            btnRandom.setDisable(false);
         });
     }
 
@@ -688,13 +735,17 @@ public class GameOfLife extends Application {
         Button btnStep = new Button();
         btnStep.setText("Step");
 
-        hbButtons.getChildren().addAll(btnStart, btnStop, btnReset, btnStep);
+        Button btnRandom = new Button();
+        btnRandom.setText("Random");
+
+        hbButtons.getChildren().addAll(btnStart, btnStop, btnStep, btnRandom);
 
         setStartButtonAction(btnStart);
         setStopButtonAction(btnStop);
         setResetButtonAction(btnReset, btnStop);
         setStepButtonAction(btnStep);
-
+        setRandomButtonAction(btnRandom);
+        setUpAllButtons(btnStart, btnStop, btnRandom);
         return hbButtons;
     }
 
