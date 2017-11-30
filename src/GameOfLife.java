@@ -61,9 +61,9 @@ public class GameOfLife extends Application {
     private static boolean isPaused = true;
     private static boolean isRandom = false;
 
-    private static String musicFile = "Debriefing.mp3";
-    private static Media sound = new Media(new File(musicFile).toURI().toString());
-    private static MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    private static String musicFile;
+    private static Media sound;
+    private static MediaPlayer mediaPlayer;
 
 
     private static Label generationLabel;
@@ -76,10 +76,16 @@ public class GameOfLife extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        loadMusicFile();
         init(primaryStage);
         gameLoop();
     }
 
+    public void loadMusicFile() {
+        musicFile =  "Debriefing.mp3";
+        sound = new Media(new File(musicFile).toURI().toString());
+        mediaPlayer = new MediaPlayer(sound);
+    }
 
     public void gameLoop() {
 
@@ -138,9 +144,11 @@ public class GameOfLife extends Application {
         GridPane centerPane = getCenterPane();
         HBox bottomPane = getBottomPane();
         ScrollPane rightPane = getRightPane();
+//        rightPane.getStyleClass().add("scroll-pane");
         GridPane leftPane = getLeftPane();
         BorderPane root = new BorderPane();
         Scene scene = new Scene(root);
+        scene.getStylesheets().add("css/styles.css");
 
         root.setPadding(new Insets(10, 10, 10, 10));
         root.setCenter(centerPane);
@@ -177,15 +185,21 @@ public class GameOfLife extends Application {
 
     private static GridPane getLeftPane() {
         GridPane grid = new GridPane();
-        grid.add(new Label("Generation"), 0, 0);
+        Label label = new Label("Generation");
+        label.getStyleClass().add("underline");
+        grid.add(label, 0, 0);
         generationLabel = new Label(Integer.toString(generation));
         grid.add(generationLabel, 0, 1);
 
-        grid.add(new Label("liveCells"), 0, 2);
+        Label label1 = new Label("liveCells");
+        label1.getStyleClass().add("underline");
+        grid.add(label1, 0, 2);
         liveCellsLabel = new Label(Integer.toString(liveCells));
         grid.add(liveCellsLabel, 0, 3);
 
-        grid.add(new Label("Selected Pattern"), 0, 4);
+        Label label2 = new Label("Selected Pattern");
+        label2.getStyleClass().add("underline");
+        grid.add(label2, 0, 4);
         selectedPatternLabel = new Label("NULL", selectedPatternCell);
         selectedPatternLabel.setContentDisplay(ContentDisplay.TOP);
         grid.add(selectedPatternLabel, 0, 5);
@@ -469,7 +483,7 @@ public class GameOfLife extends Application {
                 isPaused = false;
 
                 if(!playing){
-                    btnStop.setText("Stop");
+                    btnStop.setText("Clear");
                     playing = false;
 
                 }
@@ -720,14 +734,16 @@ public class GameOfLife extends Application {
 
     private static HBox getBottomPane() {
         HBox hbButtons = new HBox();
+        hbButtons.getStyleClass().add("hbox");
         hbButtons.setSpacing(10.0);
         hbButtons.setPadding(new Insets(10,10,0,10));
 
         Button btnStart = new Button();
         btnStart.setText("Start");
+        btnStart.getStyleClass().add("button");
 
         Button btnStop = new Button();
-        btnStop.setText("Stop");
+        btnStop.setText("Clear");
 
         Button btnReset = new Button();
         btnReset.setText("Reset");
