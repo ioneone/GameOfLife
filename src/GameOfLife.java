@@ -1,10 +1,8 @@
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 
 import javafx.scene.input.*;
@@ -17,7 +15,6 @@ import javafx.scene.input.TransferMode;
 
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.util.Random;
@@ -32,11 +29,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.WindowEvent;
-
-import java.io.File;
-import javafx.animation.Timeline;
-import javafx.animation.KeyFrame;
-import javafx.util.Duration;
 
 /**
  * Created by one on 9/21/17.
@@ -82,8 +74,8 @@ public class GameOfLife extends Application {
     }
 
     public void loadMusicFile() {
-        musicFile =  "Debriefing.mp3";
-        sound = new Media(new File(musicFile).toURI().toString());
+        musicFile = "Debriefing.mp3";
+        sound = new Media(getClass().getClassLoader().getResource(musicFile).toString());
         mediaPlayer = new MediaPlayer(sound);
     }
 
