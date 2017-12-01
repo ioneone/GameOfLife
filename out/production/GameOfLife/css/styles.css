@@ -11,14 +11,14 @@
 }
 
 .button {
-
     -fx-background-color: #4CAF50; /* Green */
     -fx-text-fill: #ffffff;
-
 }
 
 .underline {
-
     -fx-underline: true;
+}
 
+.gol-pane {
+    -fx-background-color: #000000;
 }

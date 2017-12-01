@@ -1,3 +1,10 @@
+/**
+ * Program Name: Cell.java
+ * Discussion:   Cell
+ * Written By:   Junhong Wang
+ * Date:         2017/11/30
+ */
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
@@ -9,9 +16,6 @@ import java.util.Iterator;
 import java.util.EventListener;
 import java.util.EventObject;
 
-/**
- * Created by one on 9/21/17.
- */
 public class Cell extends Rectangle {
 
     public static final Color ALIVE_COLOR = Color.YELLOW;
@@ -36,7 +40,8 @@ public class Cell extends Rectangle {
         this.isAliveNext = isAliveNext;
     }
 
-    public Cell(boolean isAlive, boolean isAliveNext, double size, int row, int col) {
+    public Cell(boolean isAlive, boolean isAliveNext, double size,
+                int row, int col) {
         super(size, size);
         this.row = row;
         this.col = col;
@@ -72,7 +77,8 @@ public class Cell extends Rectangle {
     }
 
     private void liveTransition(int numLiveNeighbours) {
-        if (numLiveNeighbours < 2 || numLiveNeighbours > 3) { // underpopulation and overpopulation
+        if (numLiveNeighbours < 2 || numLiveNeighbours > 3) {
+            // underpopulation and overpopulation
             isAliveNext = false;
         } else {
             isAliveNext = true;
@@ -80,7 +86,8 @@ public class Cell extends Rectangle {
     }
 
     private void deadTransition(int numLiveNeighbours) {
-        if (numLiveNeighbours == 3) { // reproduction
+        if (numLiveNeighbours == 3) {
+            // reproduction
             isAliveNext = true;
         } else {
             isAliveNext = false;
